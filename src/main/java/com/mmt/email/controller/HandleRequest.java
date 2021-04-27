@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 
 //{
-//        "name" : "utkarsh", "sourceEmailId": "emaildeep10@gmail.com", "password" : "emaildeep1010", "targetEmailId":"10utkars@gmail.com",
+//        "sourceEmailId": "emaildeep10@gmail.com", "password" : "emaildeep1010", "targetEmailId":"10utkars@gmail.com",
 //        "subject":"TEST EMAIL 5", "body" : "<div><h3 style=\"color:red\">Hello World!</h3><br/><p>How are you?</p><br/><h5>Regards,</h5><h4>Utkarsh Deep</h4></div>", "isHtml":"true"
 //
 //}
