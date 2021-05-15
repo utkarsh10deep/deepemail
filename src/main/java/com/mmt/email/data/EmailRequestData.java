@@ -1,7 +1,6 @@
 package com.mmt.email.data;
 
 import lombok.Data;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Data
 public class EmailRequestData {

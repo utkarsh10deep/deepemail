@@ -1,58 +1,28 @@
 package com.mmt.email.send;
 
+import com.mmt.email.builders.RunnableBuilder;
 import com.mmt.email.data.EmailRequestData;
+import com.mmt.email.data.ExecutorThreadPool;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.mail.MessagingException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Component
 @Slf4j
 public class TriggerEmail {
     @Autowired
-    private SendEmail sendEmail;
+    private RunnableBuilder runnableBuilder;
     @Autowired
-    private SendHtmlMail sendHtmlMail;
-
-    private ExecutorService executorService = Executors.newFixedThreadPool(20);
-
-    public void trigger(EmailRequestData data) {
-
-        Runnable runnable = null;
-        if(data.getIsHtml().equalsIgnoreCase("true"))
-        {
-            runnable = () -> {
-                try {
-                    sendHtmlMail.sendMail(data);
-                }
-                catch (MessagingException e) {
-                    log.error("MessagingException: Error while processing a trigger html-email request");
-                    log.error(e.toString());
-                }
-                catch (Exception e) {
-                    log.error("Error while processing a trigger html-email request");
-                    log.error(e.toString());
-                }
-            };
-        }
+    private ExecutorThreadPool executorThreadPool;
 
 
-        else
-        {
-            runnable = () -> {
-                try {
-                    sendEmail.sendMail(data);
-                }
-                catch (Exception e) {
-                    log.error("Error while processing a trigger email request");
-                    log.error(e.toString());
-                }
-            };
-        }
-        executorService.execute(runnable);
+    public void trigger(@NonNull EmailRequestData data) {
+
+        Runnable runnable = runnableBuilder.getRunnable(data);
+
+        executorThreadPool.getExecutorService().execute(runnable);
 
     }
 }
