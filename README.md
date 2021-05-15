@@ -11,7 +11,7 @@ DeepEmail allows you to send emails from any email-id you want and takes care of
 In case you want to send more number of emails per unit time, DeepEmail provides you with '/deepemail/trigger' API which doesn't wait for entire thread to finish execution and gets ready to accept more requests.
 # UNIT-TESTED
 With more than 90% code coverage, you get a sense of reliability. When you change anything specific to your needs, you can always run those unit tests to confirm nothing is breaking.
-# PRODUCTION-READY CODE QUALITY
+# CODE QUALITY
 Attention has been given to write clean and maintainable code.
 # SAVES TIME
 Finally, the question is - why would you write code for something which has already been written, tried and tested? Save your precious time and use DeepEmail as your email service for your project.
