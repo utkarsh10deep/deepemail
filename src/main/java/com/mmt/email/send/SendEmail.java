@@ -1,32 +1,36 @@
 package com.mmt.email.send;
 
+import com.mmt.email.builders.RunnableBuilder;
 import com.mmt.email.data.EmailRequestData;
+import com.mmt.email.data.ExecutorThreadPool;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
-//import javax.mail.*;
 
-//import javax.mail.internet.*;
-//import javax.activation.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Component
 @Slf4j
 public class SendEmail {
-
     @Autowired
-    private MailSenderBuilder mailSenderBuilder;
+    private RunnableBuilder runnableBuilder;
+    @Autowired
+    private ExecutorThreadPool executorThreadPool;
 
-    public void sendMail(EmailRequestData emailRequestData)
-    {
-        JavaMailSender mailSender = mailSenderBuilder.getJavaMailSender(emailRequestData);
-        SimpleMailMessage message = new SimpleMailMessage();
-        //message.setFrom("noreply@utkarshdeep.com");
-        message.setFrom(emailRequestData.getSourceEmailId());
-        message.setTo(emailRequestData.getTargetEmailId());
-        message.setSubject(emailRequestData.getSubject());
-        message.setText(emailRequestData.getBody());
-        mailSender.send(message);
+
+    public void send(@NonNull EmailRequestData data) {
+
+        Runnable runnable = runnableBuilder.getRunnable(data);
+        Future future = executorThreadPool.getExecutorService().submit(runnable);
+        try {
+            future.get(50, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            log.error(e.toString());
+        }
+
     }
 }

@@ -1,8 +1,8 @@
 package com.mmt.email.send;
 
+import com.mmt.email.builders.MailSenderBuilder;
 import com.mmt.email.data.EmailRequestData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Component
-public class SendHtmlMail {
+public class HtmlMail {
     @Autowired
     private MailSenderBuilder mailSenderBuilder;
 
