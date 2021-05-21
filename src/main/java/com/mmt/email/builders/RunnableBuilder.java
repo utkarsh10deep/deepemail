@@ -1,6 +1,7 @@
 package com.mmt.email.builders;
 
 import com.mmt.email.data.EmailRequestData;
+import com.mmt.email.handler.ErrorHandler;
 import com.mmt.email.send.HtmlMail;
 import com.mmt.email.send.SimpleEmail;
 import lombok.NonNull;
@@ -17,28 +18,35 @@ public class RunnableBuilder {
     private SimpleEmail simpleEmail;
     @Autowired
     private HtmlMail htmlMail;
+    @Autowired
+    private ErrorHandler errorHandler;
 
     public Runnable getRunnable(@NonNull EmailRequestData data) {
         Runnable runnable = null;
         if (data.getIsHtml().equalsIgnoreCase("true")) {
             runnable = () -> {
                 try {
+                    errorHandler.resetErrorMessage();
                     htmlMail.sendMail(data);
                 } catch (MessagingException e) {
-                    log.error("MessagingException: Error while processing a trigger html-email request");
+                    log.error("MessagingException: Error while processing a html-email request");
                     log.error(e.toString());
+                    errorHandler.setErrorMessage(e);
                 } catch (Exception e) {
-                    log.error("Error while processing a trigger html-email request");
+                    log.error("Error while processing a html-email request");
                     log.error(e.toString());
+                    errorHandler.setErrorMessage(e);
                 }
             };
         } else {
             runnable = () -> {
                 try {
+                    errorHandler.resetErrorMessage();
                     simpleEmail.sendMail(data);
                 } catch (Exception e) {
-                    log.error("Error while processing a trigger email request");
+                    log.error("Error while processing a email request");
                     log.error(e.toString());
+                    errorHandler.setErrorMessage(e);
                 }
             };
         }

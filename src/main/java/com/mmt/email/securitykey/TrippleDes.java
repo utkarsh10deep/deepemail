@@ -1,5 +1,6 @@
 package com.mmt.email.securitykey;
 
+import com.mmt.email.handler.ErrorHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class TrippleDes {
 
     @Autowired
     private Environment environment;
+    @Autowired
+    private ErrorHandler errorHandler;
 
     private byte[] arrayBytes;
     private SecretKey key;
@@ -39,7 +42,8 @@ public class TrippleDes {
             byte[] encryptedText = cipher.doFinal(plainText);
             encryptedString = new String(Base64.encodeBase64(encryptedText));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info(e.toString());
+            errorHandler.setErrorMessage(e);
         }
         return encryptedString;
     }
@@ -54,7 +58,8 @@ public class TrippleDes {
             byte[] plainText = cipher.doFinal(encryptedText);
             decryptedText = new String(plainText);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.toString());
+            errorHandler.setErrorMessage(e);
         }
         return decryptedText;
     }
@@ -75,6 +80,7 @@ public class TrippleDes {
             key = skf.generateSecret(ks);
         } catch (Exception e) {
             log.error(e.toString());
+            errorHandler.setErrorMessage(e);
         }
 
     }
